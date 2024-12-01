@@ -118,8 +118,10 @@ char *sdm_shift_args(int *argc, char ***argv);
 char *sdm_read_entire_file(const char *file_path);
 
 sdm_string_view sdm_cstr_as_sv(char *cstr);
+char *sdm_sv_to_cstr(sdm_string_view sv);
 sdm_string_view sdm_sized_str_as_sv(char *cstr, size_t length);
 sdm_string_view sdm_sv_pop_by_delim(sdm_string_view *SV, const char delim);
+sdm_string_view sdm_sv_pop_by_whitespace(sdm_string_view *SV);
 void sdm_sv_trim(sdm_string_view *SV);
 
 typedef struct {
@@ -268,11 +270,33 @@ sdm_string_view sdm_cstr_as_sv(char *cstr) {
   };
 }
 
+char *sdm_sv_to_cstr(sdm_string_view sv) {
+  char *ret = malloc(sv.length + 1);
+  memset(ret, 0, sv.length + 1);
+  memcpy(ret, sv.data, sv.length);
+  return ret;
+}
+
 sdm_string_view sdm_sized_str_as_sv(char *cstr, size_t length) {
   return (sdm_string_view) {
     .data = cstr,
     .length = length
   };
+}
+
+sdm_string_view sdm_sv_pop_by_whitespace(sdm_string_view *SV) {
+  sdm_string_view ret = {0};
+  ret.data = SV->data;
+
+  while (!isspace(*SV->data) && (SV->length>0)) {
+    SV->data++;
+    SV->length--;
+    ret.length++;
+  }
+  SV->data++;
+  SV->length--;
+
+  return ret;
 }
 
 sdm_string_view sdm_sv_pop_by_delim(sdm_string_view *SV, const char delim) {
