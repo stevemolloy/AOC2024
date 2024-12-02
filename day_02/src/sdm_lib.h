@@ -315,6 +315,15 @@ sdm_string_view sdm_sv_pop_by_delim(sdm_string_view *SV, const char delim) {
   return ret;
 }
 
+int sdm_pop_integer(sdm_string_view *SV) {
+  char *new_pos;
+  int retval = strtol(SV->data, &new_pos, 0);
+  size_t diff = new_pos - SV->data;
+  SV->data = new_pos;
+  SV->length -= diff;
+  return retval;
+}
+
 void sdm_sv_trim(sdm_string_view *SV) {
   while (isspace(*SV->data) && SV->length>0) {
     SV->data++;

@@ -18,29 +18,54 @@ typedef struct {
   DynIntArray *data;
 } DynDynIntArray;
 
-typedef enum {
-  GOING_UP,
-  GOING_DOWN,
-} Direction;
+size_t safe_reports_part1(DynDynIntArray array_of_arrays);
+size_t safe_reports_part2(DynDynIntArray array_of_arrays);
+
+int main(void) {
+  // char *input_file = "./test.txt";
+  char *input_file = "./input.txt";
+  char *file_contents = sdm_read_entire_file(input_file);
+  sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
+
+  DynDynIntArray array_of_arrays = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(array_of_arrays, 1024);
+  size_t line_num = 0;
+  while (contents_view.length) {
+    array_of_arrays.data[line_num] = (DynIntArray){0};
+    SDM_ENSURE_ARRAY_MIN_CAP(array_of_arrays.data[line_num], 1024);
+    array_of_arrays.length = line_num + 1;
+    while (*contents_view.data != '\n') {
+      SDM_ARRAY_PUSH(array_of_arrays.data[line_num], sdm_pop_integer(&contents_view));
+      if (*contents_view.data != '\n') sdm_sv_trim(&contents_view);
+    }
+    sdm_sv_trim(&contents_view);
+    line_num++;
+  }
+
+  printf("Part 1 = %zu\n", safe_reports_part1(array_of_arrays));
+  printf("Part 2 = %zu\n", safe_reports_part2(array_of_arrays));
+
+  for (size_t i=0; i< array_of_arrays.length; i++) 
+    SDM_ARRAY_FREE(array_of_arrays.data[i]);
+  SDM_ARRAY_FREE(array_of_arrays);
+  free(file_contents);
+
+  return 0;
+}
 
 DynIntArray get_array_diff(DynIntArray arr) {
   DynIntArray retval = {0};
   SDM_ENSURE_ARRAY_MIN_CAP(retval, arr.capacity);
 
-  for (size_t i=0; i<arr.length-1; i++) {
-    SDM_ARRAY_PUSH(retval, arr.data[i+1] - arr.data[i]);
-  }
+  for (size_t i=0; i<arr.length-1; i++) SDM_ARRAY_PUSH(retval, arr.data[i+1] - arr.data[i]);
 
   return retval;
 }
 
 size_t count_zeros(DynIntArray arr) {
   size_t retval = 0;
-
   for (size_t i=0; i<arr.length; i++) {
-    if (arr.data[i] == 0) {
-      retval++;
-    }
+    if (arr.data[i] == 0) retval++;
   }
 
   return retval;
@@ -101,12 +126,9 @@ bool report_is_safe_part2(DynIntArray report) {
 
 size_t safe_reports_part1(DynDynIntArray array_of_arrays) {
   size_t num_safe = 0;
-
   for (size_t report_num=0; report_num<array_of_arrays.length; report_num++) {
     DynIntArray report = array_of_arrays.data[report_num];
-    bool passed = report_is_safe_part1(report);
-    report_is_safe_part2(report);
-    if (passed) num_safe++;
+    if (report_is_safe_part1(report)) num_safe++;
   }
 
   return num_safe;
@@ -114,60 +136,11 @@ size_t safe_reports_part1(DynDynIntArray array_of_arrays) {
 
 size_t safe_reports_part2(DynDynIntArray array_of_arrays) {
   size_t num_safe = 0;
-
   for (size_t report_num=0; report_num<array_of_arrays.length; report_num++) {
     DynIntArray report = array_of_arrays.data[report_num];
-    bool passed = report_is_safe_part2(report);
-    if (passed) num_safe++;
+    if (report_is_safe_part2(report)) num_safe++;
   }
 
   return num_safe;
-}
-
-int main(void) {
-  // char *input_file = "./test.txt";
-  char *input_file = "./input.txt";
-  char *file_contents = sdm_read_entire_file(input_file);
-  sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
-
-  DynDynIntArray array_of_arrays = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(array_of_arrays, 1024);
-  size_t line_num = 0;
-  while (contents_view.length) {
-    array_of_arrays.data[line_num] = (DynIntArray){0};
-    SDM_ENSURE_ARRAY_MIN_CAP(array_of_arrays.data[line_num], 1024);
-    array_of_arrays.length = line_num + 1;
-    while (*contents_view.data != '\n') {
-      SDM_ARRAY_PUSH(array_of_arrays.data[line_num], sdm_pop_integer(&contents_view));
-      if (*contents_view.data != '\n') sdm_sv_trim(&contents_view);
-    }
-    sdm_sv_trim(&contents_view);
-    line_num++;
-  }
-
-  printf("Num reports = %zu\n", array_of_arrays.length);
-
-  size_t num_safe_part1 = safe_reports_part1(array_of_arrays);
-  size_t num_safe_part2 = safe_reports_part2(array_of_arrays);
-
-  printf("Part 1 = %zu\n", num_safe_part1);
-  printf("Part 2 = %zu\n", num_safe_part2);
-
-  for (size_t i=0; i< array_of_arrays.length; i++) {
-    SDM_ARRAY_FREE(array_of_arrays.data[i]);
-  }
-  SDM_ARRAY_FREE(array_of_arrays);
-  free(file_contents);
-
-  return 0;
-}
-
-int sdm_pop_integer(sdm_string_view *SV) {
-  char *new_pos;
-  int retval = strtol(SV->data, &new_pos, 0);
-  size_t diff = new_pos - SV->data;
-  SV->data = new_pos;
-  SV->length -= diff;
-  return retval;
 }
 
