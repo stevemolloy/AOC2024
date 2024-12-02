@@ -1,6 +1,3 @@
-#include <assert.h>
-#include <limits.h>
-#include <stdlib.h>
 #include <stdio.h>
 
 #define SDM_LIB_IMPLEMENTATION
