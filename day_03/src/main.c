@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <stdio.h>
 
 #define SDM_LIB_IMPLEMENTATION
@@ -11,12 +10,6 @@ int main(void) {
   char *file_contents = sdm_read_entire_file(input_file);
   sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
 
-  for (size_t i=0; i<contents_view.length; i++) {
-    if (contents_view.data[i] == '\n') {
-      contents_view.data[i] = ' ';
-    }
-  }
-
   size_t i = 0;
   int val1, val2;
   int part1_ans = 0, part2_ans = 0;
@@ -27,27 +20,20 @@ int main(void) {
     val1 = 0;
     val2 = 0;
     if (strncmp(contents_view.data + i, "mul(", 4) == 0) {
-      // Found mul(
       i += 4;
-      size_t numdigits = 0;
       while (isdigit(contents_view.data[i])) {
-        numdigits++;
         val1 *= 10;
         val1 += contents_view.data[i] - '0';
         i++;
       }
-      if (numdigits > 3) continue;
-      if (contents_view.data[i] != ',') continue;
+      if ((val1 > 999) || (contents_view.data[i] != ',')) continue;
       i++;
-      numdigits = 0;
       while (isdigit(contents_view.data[i])) {
-        numdigits++;
         val2 *= 10;
         val2 += contents_view.data[i] - '0';
         i++;
       }
-      if (numdigits > 3) continue;
-      if (contents_view.data[i] != ')') continue;
+      if ((val2 > 999) || (contents_view.data[i] != ')')) continue;
       part1_ans += val1 * val2;
       part2_ans += enabled * val1 * val2;
     }
