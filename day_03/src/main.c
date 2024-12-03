@@ -22,15 +22,13 @@ int main(void) {
     if (strncmp(contents_view.data + i, "mul(", 4) == 0) {
       i += 4;
       while (isdigit(contents_view.data[i])) {
-        val1 *= 10;
-        val1 += contents_view.data[i] - '0';
+        val1 = (val1 * 10) + contents_view.data[i] - '0';
         i++;
       }
       if ((val1 > 999) || (contents_view.data[i] != ',')) continue;
       i++;
       while (isdigit(contents_view.data[i])) {
-        val2 *= 10;
-        val2 += contents_view.data[i] - '0';
+        val2 = (val2 * 10) + contents_view.data[i] - '0';
         i++;
       }
       if ((val2 > 999) || (contents_view.data[i] != ')')) continue;
