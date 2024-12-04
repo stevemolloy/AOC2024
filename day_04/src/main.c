@@ -22,6 +22,7 @@ int main(void) {
 
   size_t part1_count = 0;
   for (size_t linenum=0; linenum<lines.length; linenum++) {
+    // Rows
     for (size_t j=0; j<lines.data[linenum].length; j++) {
       if ((strncmp(lines.data[linenum].data + j, "XMAS", 4) == 0) || (strncmp(lines.data[linenum].data + j, "SAMX", 4) == 0)) {
         part1_count++;
@@ -29,6 +30,7 @@ int main(void) {
     }
   }
   for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
+    // Columns
     for (size_t j=0; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j] == 'M') && (lines.data[linenum+2].data[j] == 'A') && (lines.data[linenum+3].data[j] == 'S')) {
         part1_count++;
@@ -37,15 +39,13 @@ int main(void) {
         part1_count++;
       }
     }
-  }
-  for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
+    // Diagonals down to the right
     for (size_t j=0; j<lines.data[linenum].length-3; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+2].data[j+2] == 'A') && (lines.data[linenum+3].data[j+3] == 'S')) {
         part1_count++;
       }
     }
-  }
-  for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
+    // Diagonals down to the left
     for (size_t j=3; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum+2].data[j-2] == 'A') && (lines.data[linenum+3].data[j-3] == 'S')) {
         part1_count++;
@@ -53,13 +53,13 @@ int main(void) {
     }
   }
   for (size_t linenum=3; linenum<(lines.length); linenum++) {
+    // Diagonals up to the right
     for (size_t j=0; j<lines.data[linenum].length-3; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum-1].data[j+1] == 'M') && (lines.data[linenum-2].data[j+2] == 'A') && (lines.data[linenum-3].data[j+3] == 'S')) {
         part1_count++;
       }
     }
-  }
-  for (size_t linenum=3; linenum<(lines.length); linenum++) {
+    // Diagonals up to the left
     for (size_t j=3; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum-2].data[j-2] == 'A') && (lines.data[linenum-3].data[j-3] == 'S')) {
         part1_count++;
@@ -72,19 +72,12 @@ int main(void) {
   size_t part2_count = 0;
   for (size_t linenum=1; linenum<(lines.length-1); linenum++) {
     for (size_t j=1; j<lines.data[linenum].length-1; j++) {
-      if (lines.data[linenum].data[j] != 'A') {
-        continue;
-      }
-      if ((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S')) {
-        part2_count++;
-      }
-      if ((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M')) {
-        part2_count++;
-      }
-      if ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S')) {
-        part2_count++;
-      }
-      if ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M')) {
+      if (lines.data[linenum].data[j] != 'A') continue;
+      if  (((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S'))
+        || ((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M'))
+        || ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S'))
+        || ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M')))
+      {
         part2_count++;
       }
     }
