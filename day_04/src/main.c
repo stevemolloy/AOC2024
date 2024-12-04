@@ -17,61 +17,57 @@ int main(void) {
 
   DynSVArray lines = {0};
   SDM_ENSURE_ARRAY_MIN_CAP(lines, 1024);
-  while (contents_view.length > 0) {
+  while (contents_view.length > 0) 
     SDM_ARRAY_PUSH(lines, sdm_sv_pop_by_delim(&contents_view, '\n'));
-  }
 
-  size_t count = 0;
+  size_t part1_count = 0;
   for (size_t linenum=0; linenum<lines.length; linenum++) {
     for (size_t j=0; j<lines.data[linenum].length; j++) {
-      if (strncmp(lines.data[linenum].data + j, "XMAS", 4) == 0) {
-        count++;
-      }
-      if (strncmp(lines.data[linenum].data + j, "SAMX", 4) == 0) {
-        count++;
+      if ((strncmp(lines.data[linenum].data + j, "XMAS", 4) == 0) || (strncmp(lines.data[linenum].data + j, "SAMX", 4) == 0)) {
+        part1_count++;
       }
     }
   }
   for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
     for (size_t j=0; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j] == 'M') && (lines.data[linenum+2].data[j] == 'A') && (lines.data[linenum+3].data[j] == 'S')) {
-        count++;
+        part1_count++;
       }
       if ((lines.data[linenum].data[j] == 'S') && (lines.data[linenum+1].data[j] == 'A') && (lines.data[linenum+2].data[j] == 'M') && (lines.data[linenum+3].data[j] == 'X')) {
-        count++;
+        part1_count++;
       }
     }
   }
   for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
     for (size_t j=0; j<lines.data[linenum].length-3; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+2].data[j+2] == 'A') && (lines.data[linenum+3].data[j+3] == 'S')) {
-        count++;
+        part1_count++;
       }
     }
   }
   for (size_t linenum=0; linenum<(lines.length - 3); linenum++) {
     for (size_t j=3; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum+2].data[j-2] == 'A') && (lines.data[linenum+3].data[j-3] == 'S')) {
-        count++;
+        part1_count++;
       }
     }
   }
   for (size_t linenum=3; linenum<(lines.length); linenum++) {
     for (size_t j=0; j<lines.data[linenum].length-3; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum-1].data[j+1] == 'M') && (lines.data[linenum-2].data[j+2] == 'A') && (lines.data[linenum-3].data[j+3] == 'S')) {
-        count++;
+        part1_count++;
       }
     }
   }
   for (size_t linenum=3; linenum<(lines.length); linenum++) {
     for (size_t j=3; j<lines.data[linenum].length; j++) {
       if ((lines.data[linenum].data[j] == 'X') && (lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum-2].data[j-2] == 'A') && (lines.data[linenum-3].data[j-3] == 'S')) {
-        count++;
+        part1_count++;
       }
     }
   }
 
-  printf("Part 1 = %zu\n", count);
+  printf("Part 1 = %zu\n", part1_count);
 
   size_t part2_count = 0;
   for (size_t linenum=1; linenum<(lines.length-1); linenum++) {
