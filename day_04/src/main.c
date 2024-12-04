@@ -15,8 +15,6 @@ int main(void) {
   char *file_contents = sdm_read_entire_file(input_file);
   sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
 
-  // printf(SDM_SV_F"\n\n", SDM_SV_Vals(contents_view));
-
   DynSVArray lines = {0};
   SDM_ENSURE_ARRAY_MIN_CAP(lines, 1024);
   while (contents_view.length > 0) {
@@ -74,6 +72,29 @@ int main(void) {
   }
 
   printf("Part 1 = %zu\n", count);
+
+  size_t part2_count = 0;
+  for (size_t linenum=1; linenum<(lines.length-1); linenum++) {
+    for (size_t j=1; j<lines.data[linenum].length-1; j++) {
+      if (lines.data[linenum].data[j] != 'A') {
+        continue;
+      }
+      if ((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S')) {
+        part2_count++;
+      }
+      if ((lines.data[linenum-1].data[j-1] == 'M') && (lines.data[linenum+1].data[j+1] == 'S') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M')) {
+        part2_count++;
+      }
+      if ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'M') && (lines.data[linenum-1].data[j+1] == 'S')) {
+        part2_count++;
+      }
+      if ((lines.data[linenum-1].data[j-1] == 'S') && (lines.data[linenum+1].data[j+1] == 'M') && (lines.data[linenum+1].data[j-1] == 'S') && (lines.data[linenum-1].data[j+1] == 'M')) {
+        part2_count++;
+      }
+    }
+  }
+
+  printf("Part 2 = %zu\n", part2_count);
 
   SDM_ARRAY_FREE(lines);
   free(file_contents);
