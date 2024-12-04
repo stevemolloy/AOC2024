@@ -2,7 +2,5 @@ bin
 objs
 input.txt
 test.txt
-day_03/.cache/clangd/index
-day_03/compile_commands.json
-day_04/.cache/clangd/index
-day_04/compile_commands.json
+*/.cache/clangd/index
+*/compile_commands.json
