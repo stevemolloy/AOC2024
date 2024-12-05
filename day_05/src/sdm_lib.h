@@ -15,6 +15,7 @@
  * SDM_ENSURE_ARRAY_MIN_CAP(da, cap)   Ensure that the dynamic array, da, has a capacity equal-to or greater-than cap. Realloc is used if needed.
  * DEFAULT_CAPACITY 128                Default capacity in bytes to be used when the capacity has not been set by the user.
  * SDM_ARRAY_PUSH(da, item)            Push the value of item to the dynamic array, da, reallocing if needed.
+ * SDM_ARRAY_SWAP(da, ind1, ind2)      Swap the elements at the marked indices (if length==capacity this will extend the array)
  * SDM_ARRAY_FREE(da)                  Free the memory in the dynamic array, da, and zero things
  * SDM_ARRAY_RESET(da)                 Reset the length of the dynamic array, da, to zero, effectively emptying it. No memory is freed by this.
  * 
@@ -96,6 +97,16 @@ do {                           \
     }                                                             \
     (da).data[(da).length++] = item;                              \
   } while (0);
+
+#define SDM_ARRAY_SWAP(da, ind1, ind2)                                   \
+do {                                                                     \
+  assert((int)ind1 < (int)da.length && "First index is out of bounds");  \
+  assert((int)ind2 < (int)da.length && "Second index is out of bounds"); \
+  SDM_ARRAY_PUSH(da, da.data[ind1]);                                     \
+  da.data[ind1] = da.data[ind2];                                         \
+  da.data[ind2] = da.data[da.length - 1];                                \
+  da.length--;                                                           \
+} while (0)
 
 #define SDM_ARRAY_FREE(da) do {                                \
     SDM_FREE((da).data);                                           \
