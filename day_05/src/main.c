@@ -20,9 +20,46 @@ typedef struct {
   DynRulesArray *data;
 } DynUpdateArray;
 
+void array_swap_elements(DynRulesArray array, size_t ind1, size_t ind2) {
+  assert(ind1 < array.length && "First index is out of bounds");
+  assert(ind2 < array.length && "Second index is out of bounds");
+  int temp = array.data[ind1];
+  array.data[ind1] = array.data[ind2];
+  array.data[ind2] = temp;
+}
+
 int get_middle(DynRulesArray update) {
   assert(update.length % 2 == 1 && "Even lengths have no middle!");
   return update.data[(update.length - 1) / 2];
+}
+
+void make_consistent_with_rules(DynRulesArray update, DynRulesArray lhs, DynRulesArray rhs) {
+  assert(lhs.length == rhs.length && "Rule arrays have inconsistent lengths");
+
+  for (size_t i=0; i<lhs.length; i++) {
+    int lhs_i = lhs.data[i];
+    int rhs_i = rhs.data[i];
+    int index_lhs = -1;
+    int index_rhs = -1;
+    for (size_t j=0; j<update.length; j++) {
+      if (update.data[j] == lhs_i) {
+        index_lhs = j;
+      }
+      if (update.data[j] == rhs_i) {
+        index_rhs = j;
+      }
+      if ((index_lhs > 0) && (index_rhs > 0)) {
+        break;
+      }
+    }
+    if ((index_lhs < 0) || (index_rhs < 0)) {
+      continue;
+    } else if (index_lhs < index_rhs) {
+      continue;
+    } else {
+      array_swap_elements(update, index_lhs, index_rhs);
+    }
+  }
 }
 
 bool update_consistent_with_rules(DynRulesArray update, DynRulesArray lhs, DynRulesArray rhs) {
@@ -106,6 +143,7 @@ int main(void) {
 
   size_t updates_passed = 0;
   int part1_answer = 0;
+  int part2_answer = 0;
   for (size_t i=0; i<updates.length; i++) {
     if (update_consistent_with_rules(updates.data[i], lhs, rhs)) {
       updates_passed++;
@@ -113,11 +151,16 @@ int main(void) {
       printf("Update %zu passed :)\n", i+1);
     } else {
       printf("Update %zu failed :(\n", i+1);
+      while (!update_consistent_with_rules(updates.data[i], lhs, rhs)) {
+        make_consistent_with_rules(updates.data[i], lhs, rhs);
+      }
+      part2_answer += get_middle(updates.data[i]);
     }
   }
 
   printf("Updates passed = %zu\n", updates_passed);
   printf("Part 1 answer = %d\n", part1_answer);
+  printf("Part 2 answer = %d\n", part2_answer);
 
   free(file_contents);
 
