@@ -74,6 +74,12 @@ int main(void) {
   printf("Part 1 answer = %d\n", part1_answer);
   printf("Part 2 answer = %d\n", part2_answer);
 
+  SDM_ARRAY_FREE(lhs);
+  SDM_ARRAY_FREE(rhs);
+  for (size_t i=0; i<updates.length; i++) {
+    SDM_ARRAY_FREE(updates.data[i]);
+  }
+  SDM_ARRAY_FREE(updates);
   free(file_contents);
 
   return 0;
