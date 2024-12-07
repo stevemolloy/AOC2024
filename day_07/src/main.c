@@ -5,6 +5,8 @@
 #define SDM_LIB_IMPLEMENTATION
 #include "sdm_lib.h"
 
+typedef unsigned long int ulint;
+
 typedef struct {
   size_t capacity;
   size_t length;
@@ -14,7 +16,7 @@ typedef struct {
 typedef struct {
   size_t capacity;
   size_t length;
-  unsigned long int *data;
+  ulint *data;
 } IntArray;
 
 typedef struct {
@@ -23,18 +25,18 @@ typedef struct {
   IntArray *data;
 } IntArrayArray;
 
-typedef unsigned long int (*binop)(unsigned long int, unsigned long int);
+typedef ulint (*binop)(ulint, ulint);
 
-unsigned long int add(unsigned long int a, unsigned long int b) {
+ulint add(ulint a, ulint b) {
   return a + b;
 }
 
-unsigned long int mul(unsigned long int a, unsigned long int b) {
+ulint mul(ulint a, ulint b) {
   return a * b;
 }
 
-unsigned long int cat(unsigned long int a, unsigned long int b) {
-  unsigned long int b_copy = b;
+ulint cat(ulint a, ulint b) {
+  ulint b_copy = b;
 
   while (b > 0) {
     a *= 10;
@@ -79,21 +81,18 @@ int main(void) {
     }
   }
 
-  unsigned long int part1_ans = 0;
+  ulint part1_ans = 0;
   for (size_t i=0; i<results.length; i++) {
     IntArray args = arglist.data[i];
-    unsigned long int result = results.data[i];
+    ulint result = results.data[i];
 
     for (int mask=0; mask<pow(2, (int)args.length); mask++) {
-      unsigned long int total = args.data[0];
+      ulint total = args.data[0];
       int mask_copy = mask;
       for (size_t i=1; i<args.length; i++) {
-        size_t ind = mask_copy % 2;
+        total = ops[mask_copy % 2](total, args.data[i]);
         mask_copy /= 2;
-        total = ops[ind](total, args.data[i]);
-        if (total > result) {
-          break;
-        }
+        if (total > result) break;
       }
       if (total == result) {
         part1_ans += result;
@@ -104,21 +103,18 @@ int main(void) {
 
   printf("Part 1 = %ld (5091289 is too low, 5357428 is too low)\n", part1_ans);
 
-  unsigned long int part2_ans = 0;
+  ulint part2_ans = 0;
   for (size_t i=0; i<results.length; i++) {
     IntArray args = arglist.data[i];
-    unsigned long int result = results.data[i];
+    ulint result = results.data[i];
 
     for (int mask=0; mask<pow(3, (int)args.length); mask++) {
-      unsigned long int total = args.data[0];
+      ulint total = args.data[0];
       int mask_copy = mask;
       for (size_t i=1; i<args.length; i++) {
-        size_t ind = mask_copy % 3;
+        total = ops[mask_copy % 3](total, args.data[i]);
         mask_copy /= 3;
-        total = ops[ind](total, args.data[i]);
-        if (total > result) {
-          break;
-        }
+        if (total > result) break;
       }
       if (total == result) {
         part2_ans += result;
@@ -129,6 +125,12 @@ int main(void) {
 
   printf("Part 2 = %ld (7068204125831 is too low)\n", part2_ans);
 
+  for (size_t i=0; i<arglist.length; i++) {
+    SDM_ARRAY_FREE(arglist.data[i]);
+  }
+  SDM_ARRAY_FREE(arglist);
+  SDM_ARRAY_FREE(results);
+  SDM_ARRAY_FREE(lines);
   free(file_contents);
 
   return 0;
