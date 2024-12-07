@@ -74,7 +74,7 @@ int main(void) {
     IntArray args = arglist.data[i];
     unsigned long int result = results.data[i];
 
-    for (int mask=0; mask<(int)args.length; mask++) {
+    for (int mask=0; mask<=(int)args.length; mask++) {
       unsigned long int total = args.data[0];
       for (size_t i=1; i<args.length; i++) {
         size_t ind = (mask >> (i-1)) & 1;
@@ -91,7 +91,7 @@ int main(void) {
     }
   }
 
-  printf("Part 1 = %ld (5091289 is too low)\n", part1_ans);
+  printf("Part 1 = %ld (5091289 is too low, 5357428 is too low)\n", part1_ans);
 
   free(file_contents);
 
