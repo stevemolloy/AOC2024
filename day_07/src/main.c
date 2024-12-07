@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <assert.h>
+#include <math.h>
 
 #define SDM_LIB_IMPLEMENTATION
 #include "sdm_lib.h"
@@ -74,7 +75,7 @@ int main(void) {
     IntArray args = arglist.data[i];
     unsigned long int result = results.data[i];
 
-    for (int mask=0; mask<=(int)args.length; mask++) {
+    for (int mask=0; mask<pow(2, (int)args.length); mask++) {
       unsigned long int total = args.data[0];
       for (size_t i=1; i<args.length; i++) {
         size_t ind = (mask >> (i-1)) & 1;

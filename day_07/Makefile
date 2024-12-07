@@ -14,7 +14,7 @@ all: $(BIN)
 
 $(BIN): $(OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CINCLUDES) $^ -o $@ $(CLIBS)
+	$(CC) $(CFLAGS) $(CINCLUDES) $^ -o $@ $(CLIBS) -lm
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(@D)
