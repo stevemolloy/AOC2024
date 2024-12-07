@@ -33,7 +33,18 @@ unsigned long int mul(unsigned long int a, unsigned long int b) {
   return a * b;
 }
 
-binop ops[2] = {&add, &mul};
+unsigned long int cat(unsigned long int a, unsigned long int b) {
+  unsigned long int b_copy = b;
+
+  while (b > 0) {
+    a *= 10;
+    b /= 10;
+  }
+
+  return a + b_copy;
+}
+
+binop ops[3] = {&add, &mul, &cat};
 
 int main(void) {
   // char *input_file = "./test.txt";
@@ -41,8 +52,6 @@ int main(void) {
   char *file_contents = sdm_read_entire_file(input_file);
 
   sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
-
-  printf(SDM_SV_F"\n", SDM_SV_Vals(contents_view));
 
   Lines lines = {0};
   SDM_ENSURE_ARRAY_MIN_CAP(lines, 1024);
@@ -77,8 +86,10 @@ int main(void) {
 
     for (int mask=0; mask<pow(2, (int)args.length); mask++) {
       unsigned long int total = args.data[0];
+      int mask_copy = mask;
       for (size_t i=1; i<args.length; i++) {
-        size_t ind = (mask >> (i-1)) & 1;
+        size_t ind = mask_copy % 2;
+        mask_copy /= 2;
         total = ops[ind](total, args.data[i]);
         if (total > result) {
           break;
@@ -86,13 +97,37 @@ int main(void) {
       }
       if (total == result) {
         part1_ans += result;
-        printf("Accumulated total = %ld (just added %ld)\n", part1_ans, result);
         break;
       }
     }
   }
 
   printf("Part 1 = %ld (5091289 is too low, 5357428 is too low)\n", part1_ans);
+
+  unsigned long int part2_ans = 0;
+  for (size_t i=0; i<results.length; i++) {
+    IntArray args = arglist.data[i];
+    unsigned long int result = results.data[i];
+
+    for (int mask=0; mask<pow(3, (int)args.length); mask++) {
+      unsigned long int total = args.data[0];
+      int mask_copy = mask;
+      for (size_t i=1; i<args.length; i++) {
+        size_t ind = mask_copy % 3;
+        mask_copy /= 3;
+        total = ops[ind](total, args.data[i]);
+        if (total > result) {
+          break;
+        }
+      }
+      if (total == result) {
+        part2_ans += result;
+        break;
+      }
+    }
+  }
+
+  printf("Part 2 = %ld (7068204125831 is too low)\n", part2_ans);
 
   free(file_contents);
 
