@@ -76,7 +76,6 @@ bool char_in_sstr(SizedStr sstr, char c) {
 * @author Andrei Ciobanu
 * @date DEC 12, 2010
 */
-
 int b_gcd(int num1, int num2) {
 	if (num1 == num2) return (num1);
 	if (!num1 && !num2) {
@@ -159,12 +158,10 @@ int main(void) {
         Coord diff = coord_sub(end, start);
         Coord back = coord_sub(start, diff);
         Coord forward = coord_add(end, diff);
-        if ((0 <= back.rownum) && (back.rownum < (int)gridrows.length) &&
-            (0 <= back.colnum) && (back.colnum < (int)gridrows.data[0].length)) {
+        if (coord_in_grid(back, gridrows.length, gridrows.data[0].length)) {
           gridrows.data[back.rownum].data[back.colnum] = '#';
         }
-        if ((0 <= forward.rownum) && (forward.rownum < (int)gridrows.length) &&
-            (0 <= forward.colnum) && (forward.colnum < (int)gridrows.data[0].length)) {
+        if (coord_in_grid(forward, gridrows.length, gridrows.data[0].length)) {
           gridrows.data[forward.rownum].data[forward.colnum] = '#';
         }
       }
@@ -173,13 +170,10 @@ int main(void) {
 
   size_t part1_ans = 0;
   for (size_t i=0; i<strlen(grid_copy); i++) {
-    if (grid_copy[i] == '#') {
-      part1_ans++;
-    }
+    if (grid_copy[i] == '#') part1_ans++;
   }
   printf("Part 1 = %zu\n", part1_ans);
 
-  printf("%s\n", file_contents);
   strcpy(grid_copy, file_contents);
 
   for (size_t i=0; i<NUMCOORDS; i++) {
@@ -209,13 +203,9 @@ int main(void) {
     }
   }
 
-  printf("%s\n", grid_copy);
-
   size_t part2_ans = 0;
   for (size_t i=0; i<strlen(grid_copy); i++) {
-    if (grid_copy[i] == '#') {
-      part2_ans++;
-    }
+    if (grid_copy[i] == '#') part2_ans++;
   }
   printf("Part 2 = %zu\n", part2_ans);
   free(file_contents);
