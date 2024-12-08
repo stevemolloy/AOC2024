@@ -105,9 +105,6 @@ int main(void) {
     return 1;
   }
   strcpy(grid_copy, file_contents);
-  for (size_t i=0; i<strlen(grid_copy); i++) {
-    // if (grid_copy[i] != '\n') grid_copy[i] = '.';
-  }
 
   sdm_string_view grid_copy_sv = sdm_cstr_as_sv(grid_copy);
 
