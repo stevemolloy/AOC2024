@@ -97,7 +97,6 @@ int main(void) {
   // char *input_file = "./test.txt";
   char *input_file = "./input.txt";
   char *file_contents = sdm_read_entire_file(input_file);
-  sdm_string_view contents_view = sdm_cstr_as_sv(file_contents);
 
   char *grid_copy = malloc(strlen(file_contents) * sizeof(char));
   if (grid_copy == NULL) {
