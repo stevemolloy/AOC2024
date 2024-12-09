@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
 #define SDM_LIB_IMPLEMENTATION
@@ -8,6 +9,23 @@ typedef struct {
   size_t length;
   long int *data;
 } IntArray;
+
+long int remove_element(IntArray *array, size_t index) {
+  assert(index < array->length);
+  long int retval = array->data[index];
+
+  if (index == array->length-1) {
+    array->length--;
+    return retval;
+  }
+
+  for (size_t i=index; i<array->length-1; i++) {
+    array->data[index] = array->data[index+1];
+  }
+  array->length--;
+
+  return retval;
+}
 
 void print_intarray(IntArray array) {
   for (size_t i=0; i<array.length; i++) {
@@ -21,6 +39,15 @@ bool is_dense(IntArray layout) {
   for (size_t i=0; i<layout.length; i++)
     if (layout.data[i] == -1) return false;
   return true;
+}
+
+size_t count_spaces(IntArray layout) {
+  size_t retval = 0;
+
+  for (size_t i=0; i<layout.length; i++)
+    if (layout.data[i] == -1) retval++;
+
+  return retval;
 }
 
 size_t first_blank_space(IntArray array) {
@@ -57,21 +84,25 @@ int main(void) {
     block_id++;
   }
 
-  // print_intarray(current_layout);
+  print_intarray(current_layout);
+
+  size_t num_spaces = count_spaces(current_layout);
 
   for (long int i=current_layout.length-1; i>=0; i--) {
     while (current_layout.data[current_layout.length-1] == -1) {
       current_layout.length--;
+      num_spaces--;
     }
 
-    if (is_dense(current_layout)) break;
+    if (num_spaces == 0) break;
     
     size_t blank = first_blank_space(current_layout);
     current_layout.data[blank] = current_layout.data[current_layout.length-1];
     current_layout.length--;
+    num_spaces--;
   }
 
-  // print_intarray(current_layout);
+  print_intarray(current_layout);
 
   long int part1_ans = 0;
   for (size_t i=0; i<current_layout.length; i++) {
