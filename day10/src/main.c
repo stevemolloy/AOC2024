@@ -75,8 +75,6 @@ int main(void) {
   char *file_contents = sdm_read_entire_file(input_file);
   sdm_string_view input = sdm_cstr_as_sv(file_contents);
 
-  printf(SDM_SV_F"\n", SDM_SV_Vals(input));
-
   SVArray input_rows = {0};
   SDM_ENSURE_ARRAY_MIN_CAP(input_rows, 1024);
 
@@ -94,8 +92,6 @@ int main(void) {
       size_t num_routes = 0;
       count_routes(input_rows, &peaks_found, row, col, 1, &num_routes);
       part2_ans += num_routes;
-      printf("num_routes = %zu\n", num_routes);
-      printf("peaks_found.length = %zu\n", peaks_found.length);
       part1_ans += peaks_found.length;
       SDM_ARRAY_FREE(peaks_found);
     }
