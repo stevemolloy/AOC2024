@@ -33,40 +33,36 @@ typedef struct {
   sdm_string_view *data;
 } SVArray;
 
-int count_routes(SVArray array, CoordArray *peaks, size_t row, size_t col, int target) {
-  static int retval = 0;
-
+void count_routes(SVArray array, CoordArray *peaks, size_t row, size_t col, int target, size_t *so_far) {
   if ((row>0) && array.data[row-1].data[col]-'0'==target) {
     if (target == 9) {
       add_coord_if_not_there(peaks, (Coord){.x=row-1, .y=col});
-      retval++;
+      (*so_far)++;
     }
-    else count_routes(array, peaks, row-1, col, target+1);
+    else count_routes(array, peaks, row-1, col, target+1, so_far);
   }
   if ((row<array.length-1) && array.data[row+1].data[col]-'0'==target) {
     if (target == 9) {
       add_coord_if_not_there(peaks, (Coord){.x=row+1, .y=col});
-      retval++;
+      (*so_far)++;
     }
-    else count_routes(array, peaks, row+1, col, target+1);
+    else count_routes(array, peaks, row+1, col, target+1, so_far);
   }
 
   if ((col>0) && array.data[row].data[col-1]-'0'==target) {
     if (target == 9) {
       add_coord_if_not_there(peaks, (Coord){.x=row, .y=col-1});
-      retval++;
+      (*so_far)++;
     }
-    else count_routes(array, peaks, row, col-1, target+1);
+    else count_routes(array, peaks, row, col-1, target+1, so_far);
   }
   if ((col<array.data[0].length-1) && array.data[row].data[col+1]-'0'==target) {
     if (target == 9) {
       add_coord_if_not_there(peaks, (Coord){.x=row, .y=col+1});
-      retval++;
+      (*so_far)++;
     }
-    else count_routes(array, peaks, row, col+1, target+1);
+    else count_routes(array, peaks, row, col+1, target+1, so_far);
   }
-
-  return retval;
 }
 
 int main(void) {
@@ -95,7 +91,10 @@ int main(void) {
       if (input_rows.data[row].data[col] != '0') continue;
       CoordArray peaks_found = {0};
       SDM_ENSURE_ARRAY_MIN_CAP(peaks_found, 64);
-      part2_ans = count_routes(input_rows, &peaks_found, row, col, 1);
+      size_t num_routes = 0;
+      count_routes(input_rows, &peaks_found, row, col, 1, &num_routes);
+      part2_ans += num_routes;
+      printf("num_routes = %zu\n", num_routes);
       printf("peaks_found.length = %zu\n", peaks_found.length);
       part1_ans += peaks_found.length;
       SDM_ARRAY_FREE(peaks_found);
